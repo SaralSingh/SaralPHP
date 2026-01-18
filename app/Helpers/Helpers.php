@@ -52,29 +52,29 @@ function makeHash($input)
     return password_hash($input, PASSWORD_BCRYPT);
 }
 
-function responseTime()
-{
+// function responseTime()
+// {
 
-    // Connect to DB
-    $conn = new PDO("mysql:host=localhost;dbname=test", "root", "");
+//     // Connect to DB
+//     $conn = new PDO("mysql:host=localhost;dbname=test", "root", "");
 
-    // Start time
-    $start = microtime(true);
+//     // Start time
+//     $start = microtime(true);
 
-    // Run query
-    $stmt = $conn->query("SELECT * FROM users_test WHERE status = 1 LIMIT 50");
+//     // Run query
+//     $stmt = $conn->query("SELECT * FROM users_test WHERE status = 1 LIMIT 50");
 
-    // Fetch results
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//     // Fetch results
+//     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // End time
-    $end = microtime(true);
+//     // End time
+//     $end = microtime(true);
 
-    // Calculate difference in milliseconds
-    $timeTaken = round(($end - $start) * 1000, 3);
+//     // Calculate difference in milliseconds
+//     $timeTaken = round(($end - $start) * 1000, 3);
 
-    echo "Time taken: {$timeTaken} ms\n";
-}
+//     echo "Time taken: {$timeTaken} ms\n";
+// }
 
 function csrf_token()
 {

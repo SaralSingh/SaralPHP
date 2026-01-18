@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Controllers;
-class DashboardController{
+
+class DashboardController
+{
     public function index()
     {
-       require APP_ROOT . "/views/dashboard.php"; 
+        return view('dashboard');
     }
 }

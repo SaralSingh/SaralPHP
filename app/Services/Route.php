@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Services;
 
 use App\Middlewares\CsrfMiddleware;
 use App\Middlewares\UserMiddleware;
 
-class Route {
+class Route
+{
 
     private static $routes = [];
     public static $controllerNamespace = "App\Controllers\\";
@@ -43,48 +45,36 @@ class Route {
     // Handle the incoming request
     public static function handle()
     {
-        // Extract only the path (removes ?query=values)
         $requestURI = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        // Request method (GET or POST)
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-        // Loop through registered routes
-        foreach (self::$routes as $route)
-        {
-            // Build complete route path with app base URL
+        $cleanRequest = rtrim($requestURI, '/');
+
+        // 🚨 INTERNAL PATHS → 403 (ONCE)
+        if (preg_match('#^' . BASE_URL . '/(app|routes|vendor|storage|views)#', $cleanRequest)) {
+            http_response_code(403);
+            (new \App\Controllers\ErrorController())->forbidden();
+            return;
+        }
+
+        foreach (self::$routes as $route) {
+
             $routeURI = BASE_URL . $route['uri'];
+            $cleanRoute = rtrim($routeURI, '/');
 
-            // Normalize URLs: remove trailing slashes
-            $cleanRoute   = rtrim($routeURI, '/');
-            $cleanRequest = rtrim($requestURI, '/');
+            if ($cleanRoute === $cleanRequest && $route['method'] === $requestMethod) {
 
-            // Check if route matches request
-            if ($cleanRoute === $cleanRequest && $route['method'] === $requestMethod)
-            {
-                // 1) CSRF check first → secure all POST requests
                 CsrfMiddleware::validate();
-
-                // 2) Auth/Guest middleware → manage session access
                 UserMiddleware::handle($route['middleware']);
 
-                // 3) Build controller class name with namespace
                 $controllerClass = self::$controllerNamespace . $route['controller'];
-
-                // 4) Action method inside controller
                 $action = $route['action'];
 
-                // 5) Create controller object
-                $controller = new $controllerClass();
-
-                // 6) Call the controller action
-                $controller->$action();
-
+                (new $controllerClass())->$action();
                 return;
             }
         }
 
-        // No route matched → show 404
         self::notFound();
     }
 }

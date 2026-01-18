@@ -4,6 +4,7 @@ use App\Services\Route;
 Route::get('/','HomeController','index');
 Route::get('/user','UserController','user');
 Route::get('/users','UserController','users');
+Route::get('/403','ErrorController','forbidden');
 
 
 Route::get('/register','AccountController','register','guest');

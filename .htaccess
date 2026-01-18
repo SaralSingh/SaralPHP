@@ -1,6 +1,24 @@
+Options -Indexes
 RewriteEngine On
 
+# -----------------------------
+# Block sensitive files
+# -----------------------------
+RewriteRule ^\.env$ - [F,L]
+RewriteRule ^composer\.(json|lock)$ - [F,L]
+RewriteRule ^README\.md$ - [F,L]
+RewriteRule ^package\.json$ - [F,L]
+RewriteRule ^phpunit\.xml$ - [F,L]
+RewriteRule ^\.gitignore$ - [F,L]
+
+# -----------------------------
+# Block internal folders (handled by app)
+# -----------------------------
+RewriteRule ^(app|routes|vendor|storage|views)(/|$) index.php [L]
+
+# -----------------------------
+# Front controller
+# -----------------------------
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
 RewriteRule ^ index.php [QSA,L]
