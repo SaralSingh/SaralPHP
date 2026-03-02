@@ -6,8 +6,8 @@ require_once APP_ROOT . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(APP_ROOT);
 $dotenv->safeLoad(); // safeLoad won't crash if .env is missing in production
 
-// Define BASE_URL from ENV, fallback to hardcoded if not set
-define('BASE_URL', $_ENV['APP_URL'] ?? '/SARALPHP');
+// Define BASE_URL from ENV directly
+define('BASE_URL', $_ENV['APP_URL']);
 
 // ----- Global Error & Exception Handling -----
 set_exception_handler(function (\Throwable $e) {
